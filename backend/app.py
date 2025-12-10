@@ -26,24 +26,24 @@ db = client["test_db"]
 test_col = db["items"]
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="frontend", static_url_path="")
 
 
 @app.route("/")
 def serve_home():
     
-    return send_from_directory(app.static_folder, "index.html")
+    return app.send_static_file("index.html")
 
 
 
 @app.route("/submittodoitem", methods=["POST"])
-def submit_todo_item():
+def submit_test_item():
     data = request.get_json() or {}
     name = data.get("itemName")
     desc = data.get("itemDescription")
     if not name:
         return jsonify({"error":"itemName required"}), 400
-    res = todo_col.insert_one({"itemName":name,"itemDescription":desc})
+    res = test_col.insert_one({"itemName":name,"itemDescription":desc})
     return jsonify({"inserted_id": str(res.inserted_id)}), 201
 
 
