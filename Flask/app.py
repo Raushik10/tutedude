@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify, render_template
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from dotenv import load_dotenv
+import json
 import os
 import pymongo
 
@@ -43,7 +44,7 @@ def submit():
 
     return 'Data submitted succesfully'  
 
-@app.route('/api')
+@app.route('/view')
 def api():
 
      data = collection.find()
@@ -62,6 +63,19 @@ def api():
 
 
      return data    
+
+DATA_FILE = os.path.join(os.path.dirname(__file__), "data.json")
+
+@app.route("/api", methods=["GET"])
+def get_api_data():
+
+    with open(DATA_FILE, "r") as f:
+
+        data = json.load(f)
+    
+    return jsonify(data)     
+
+
 
 
 
