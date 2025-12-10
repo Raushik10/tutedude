@@ -25,15 +25,29 @@
   });
   </script>
 
-  <label>Item UUID: <input type="text" id="itemUuid" name="itemUuid"></label><br>
-<script>
-function uuidv4(){
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){
+    <label>Item UUID: <input type="text" id="itemUuid" name="itemUuid"></label><br>
+  <script>
+    function uuidv4(){
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){
     const r = Math.random()*16|0, v = c==='x'? r : (r&0x3|0x8); return v.toString(16);
+    });
+  }
+  document.getElementById('itemUuid').value = uuidv4();
+  </script>
+
+    <label>Item Hash: <input type="text" id="itemHash" name="itemHash" readonly></label><br>
+  <script>
+  async function sha256(msg){
+    const buf = new TextEncoder().encode(msg);
+    const hash = await crypto.subtle.digest('SHA-256', buf);
+    return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }
+  document.getElementById('todoForm').addEventListener('input', async ()=>{
+    const name=document.getElementById('itemName').value||"";
+    const desc=document.getElementById('itemDescription').value||"";
+  document.getElementById('itemHash').value = await sha256(name+'|'+desc);
   });
-}
-document.getElementById('itemUuid').value = uuidv4();
-</script>
+  </script>
 
 
 </body>
